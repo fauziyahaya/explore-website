@@ -1,0 +1,35 @@
+- [x] Research and gather content for property investment education
+  - [x] Identify key criteria for property investment (own stay vs. investment)
+  - [x] Gather explanations and examples for each criterion
+  - [x] Research common property investment terminologies
+  - [x] Research types of financing available in Malaysia
+  - [x] Compile all information into `property_investment_guide.md`
+- [x] Research Malaysian property market and data sources
+  - [x] Identify top property websites in Malaysia (Mudah.my, PropertyGuru.com.my, iProperty.com.my)
+  - [x] Identify major newspapers for property advertisements (e.g., The Star)
+  - [x] Determine data points to extract for property listings (type, location, new/completed/sub-sale, size, price)
+- [x] Design website structure and collect visual assets
+  - [x] Plan website navigation and layout
+  - [x] Search for or generate relevant images for the website (Malaysian landscapes, property types, investment concepts)
+  - [x] Create a mood board or style guide for the website's visual design
+- [x] Develop the frontend website with React
+  - [x] Set up React project using `manus-create-react-app`
+  - [x] Create components for each section (Education, Listings, Recommendations)
+  - [x] Implement responsive design for desktop and mobile
+  - [x] Integrate content from `property_investment_guide.md` into the Education section
+  - [x] Implement filtering functionality for property listings (location, price, type, etc.)
+- [x] Implement property data aggregation backend
+  - [x] Choose a backend framework (e.g., Flask)
+  - [x] Develop scripts/APIs to scrape or access data from identified sources
+  - [x] Design a database schema to store property listings
+  - [x] Implement logic for weekly updates of property data
+  - [x] Implement logic for generating weekly investment recommendations
+- [x] Test and deploy the complete website
+  - [x] Conduct thorough testing of all website features
+  - [x] Test data aggregation and update processes
+  - [x] Deploy the frontend and backend applications
+- [x] Present final website to user
+  - [x] Notify the user about the completed website
+  - [x] Provide the URL and any necessary instructions
+  - [x] Attach `property_investment_guide.md`
+
