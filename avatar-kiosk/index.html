@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ms">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Avatar Kiosk</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="kiosk" id="kiosk">
+    <!-- Header -->
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo" id="orgLogo"></div>
+        <div class="brand-divider"></div>
+        <div>
+          <div class="org-name" id="orgName"></div>
+          <div class="org-tagline" id="orgTagline"></div>
+        </div>
+      </div>
+      <div class="clock-wrap">
+        <div class="date" id="date"></div>
+        <div class="time" id="time"></div>
+      </div>
+      <button class="lang-btn" id="langBtn" aria-label="Tukar bahasa">BM</button>
+    </header>
+
+    <!-- Avatar stage -->
+    <section class="stage" id="stage">
+      <div class="avatar" id="avatar" aria-hidden="true"></div>
+
+      <div class="bubble" id="bubble" aria-live="polite">
+        <div class="bubble-home" id="bubbleHome">
+          <div class="hi" id="hiText"></div>
+          <div class="avatar-name" id="avatarName"></div>
+          <div class="avatar-role" id="avatarRole"></div>
+          <div class="accent-line"></div>
+          <p class="bubble-hint" id="bubbleHint"></p>
+        </div>
+        <div class="bubble-answer" id="bubbleAnswer" hidden>
+          <div class="answer-q" id="answerQ"></div>
+          <p class="answer-a" id="answerA"></p>
+        </div>
+      </div>
+
+      <div class="status-pill" id="statusPill">
+        <span class="dot"></span><span id="statusText"></span>
+      </div>
+    </section>
+
+    <!-- Content: topics or questions -->
+    <section class="panel" id="panel"></section>
+
+    <!-- Footer CTA -->
+    <footer class="cta" id="cta">
+      <div class="cta-left">
+        <span class="cta-icon">
+          <svg viewBox="0 0 24 24"><path d="M9 11V6a2 2 0 0 1 4 0v5m0-1a2 2 0 0 1 4 0v1m0 0a2 2 0 0 1 4 0v3a7 7 0 0 1-7 7h-1.5a6 6 0 0 1-4.6-2.2L4.6 16a1.8 1.8 0 0 1 2.8-2.3L9 15.5"/></svg>
+        </span>
+        <span id="ctaText"></span>
+      </div>
+      <span class="cta-site" id="ctaSite"></span>
+    </footer>
+  </main>
+
+  <script src="faq-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
