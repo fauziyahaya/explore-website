@@ -109,7 +109,7 @@ export function unusualAmountAlerts(txs: Transaction[], recent: Transaction[], n
         type: 'unusual_amount',
         severity: 'warning',
         title: 'Unusual transaction amount',
-        message: `${tx.merchant ?? 'This transaction'} (${formatMoney(tx.baseTotal)}) is much higher than your usual spending in this category.`,
+        message: `${tx.merchant ?? 'This transaction'} on ${tx.date} (${formatMoney(tx.baseTotal)}) is much higher than your usual spending in this category.`,
         calculation: `mean ${formatMoney(Math.round(mean))} + 3 × σ ${formatMoney(Math.round(sd))} = ${formatMoney(Math.round(limit))} < ${formatMoney(tx.baseTotal)} (n=${vals.length})`,
         transactionIds: [tx.id],
         createdAt: nowIso,

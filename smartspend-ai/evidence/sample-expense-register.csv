@@ -1,0 +1,28 @@
+Report,Detailed Expense Register
+Reference,SSA-SINESS-REG-20261023-0100
+Company,Teratai Contoh Trading Sdn. Bhd. (Sample)
+Registration No,202601000000 (SAMPLE)
+Reporting Period,2026-09-01 to 2026-09-30
+Generated,2026-10-23T08:00:00.000Z
+Basis,Cash basis
+Currency,MYR
+Prepared By,Daniel Tan (Finance)
+Reviewed / Approved By,Aisyah (Owner)
+
+Transaction Register
+Transaction Ref,Date,Vendor,Item Description,Expense Category,Amount (excl. tax),Tax,Total,Payment Method,Department / Cost Centre,Business Purpose,Approval Status,Approved By,Receipt / Invoice Ref,Supporting Document
+sample_btx_0072,2026-09-01,Hartanah Contoh Management,—,Rent,4500,0,4500,bank transfer,Administration / Head Office,Shop lot rental,approved,Daniel Tan (Finance),—,—
+sample_btx_0070,2026-09-02,Borong Segar Supplies Sdn Bhd,—,Cost of Goods Sold,5433.97,0,5433.97,bank transfer,Operations / Head Office,Stock purchase,approved,Daniel Tan (Finance),—,—
+sample_btx_0073,2026-09-05,Tenaga Nasional Berhad,—,Utilities,903.14,0,903.14,bank transfer,Operations / Head Office,Electricity,approved,Daniel Tan (Finance),—,—
+sample_btx_0074,2026-09-06,Time Fibre Business,—,Utilities,299,0,299,bank transfer,Administration / Head Office,Internet,approved,Daniel Tan (Finance),—,—
+sample_btx_0076,2026-09-08,Meta Platforms Ireland (Facebook Ads),—,Marketing & Advertising,1554.3,0,1554.3,credit card,Sales & Marketing / Head Office,Social ads,approved,Daniel Tan (Finance),—,—
+sample_btx_0077,2026-09-11,Google Workspace,—,Software Subscriptions,84,0,84,credit card,Administration / Head Office,Email & docs,approved,Daniel Tan (Finance),—,—
+sample_btx_0080,2026-09-12,Popular Book Co. Bangsar,A4 PAPER 80GSM 500S; HP 680 BLACK INK CARTRIDGE,Office Supplies,124.5,0,124.5,debit card,Administration,Office stationery,approved,Daniel Tan (Finance),PBC20260988,—
+sample_btx_0071,2026-09-16,Borong Segar Supplies Sdn Bhd,—,Cost of Goods Sold,5731.65,0,5731.65,bank transfer,Operations / Head Office,Stock purchase,approved,Daniel Tan (Finance),—,—
+sample_btx_0078,2026-09-19,Kedai Servis Aircond Jaya,—,Repairs & Maintenance,350,0,350,cash,Operations / Head Office,Aircond servicing,approved,Daniel Tan (Finance),—,—
+sample_btx_0095,2026-09-20,Owner withdrawal,—,Owner Drawings,3000,0,3000,bank transfer,—,—,approved,Daniel Tan (Finance),—,—
+sample_btx_0079,2026-09-26,Bank charges,—,Financing Charges,15,0,15,bank transfer,Administration / Head Office,Monthly bank fees,approved,Daniel Tan (Finance),—,—
+sample_btx_0075,2026-09-27,Payroll — staff salaries,—,Payroll & Staff Costs,11500,0,11500,bank transfer,Administration / Head Office,Monthly payroll incl. EPF/SOCSO/EIS,approved,Daniel Tan (Finance),—,—
+sample_btx_0096,2026-09-28,Bank Contoh — term loan,—,Loan Principal Repayment,2500,0,2500,bank transfer,—,Loan principal instalment,approved,Daniel Tan (Finance),—,—
+
+"This report was generated from records captured in SmartSpend AI and is prepared on a cash basis unless stated otherwise. It is NOT a certified or audited financial statement, has not been independently reviewed by a professional accountant or auditor, and does not by itself guarantee compliance with LHDN, SSM, MFRS or other regulatory requirements."

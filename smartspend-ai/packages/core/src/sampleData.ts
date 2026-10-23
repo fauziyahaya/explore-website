@@ -230,12 +230,12 @@ export function sampleBusinessTransactions(today: string): Transaction[] {
     const growth = 1 + (5 - k) * 0.04;
     for (const d of [3, 10, 17, 24]) {
       if (d > max) continue;
-      out.push(b({ id: id(), workspaceId: ws, kind: 'income', date: day(month, d), merchant: 'Weekly outlet sales', total: Math.round((1800000 + r() * 400000) * growth / 4), categoryId: 'b_revenue_sales', paymentMethod: 'bank_transfer', source: 'manual', departmentId: 'dept_sales' }));
+      out.push(b({ id: id(), workspaceId: ws, kind: 'income', date: day(month, d), merchant: 'Weekly outlet sales', total: Math.round((3400000 + r() * 600000) * growth / 4), categoryId: 'b_revenue_sales', paymentMethod: 'bank_transfer', source: 'manual', departmentId: 'dept_sales' }));
     }
     if (max >= 15) out.push(b({ id: id(), workspaceId: ws, kind: 'income', date: day(month, 15), merchant: 'Corporate catering contract', total: 350000, categoryId: 'b_revenue_service', paymentMethod: 'bank_transfer', source: 'manual', receiptNumber: `INV-${month.replace('-', '')}-01` }));
     const exp: Array<[number, string, number, string, string | null, PaymentMethod, string?]> = [
-      [2, 'Borong Segar Supplies Sdn Bhd', Math.round((700000 + r() * 150000) * growth), 'b_cogs', 'dept_ops', 'bank_transfer', 'Stock purchase'],
-      [16, 'Borong Segar Supplies Sdn Bhd', Math.round((650000 + r() * 150000) * growth), 'b_cogs', 'dept_ops', 'bank_transfer', 'Stock purchase'],
+      [2, 'Borong Segar Supplies Sdn Bhd', Math.round((420000 + r() * 80000) * growth), 'b_cogs', 'dept_ops', 'bank_transfer', 'Stock purchase'],
+      [16, 'Borong Segar Supplies Sdn Bhd', Math.round((420000 + r() * 80000) * growth), 'b_cogs', 'dept_ops', 'bank_transfer', 'Stock purchase'],
       [1, 'Hartanah Contoh Management', 450000, 'b_rent', 'dept_admin', 'bank_transfer', 'Shop lot rental'],
       [5, 'Tenaga Nasional Berhad', 85000 + Math.floor(r() * 20000), 'b_utilities', 'dept_ops', 'bank_transfer', 'Electricity'],
       [6, 'Time Fibre Business', 29900, 'b_utilities', 'dept_admin', 'bank_transfer', 'Internet'],
