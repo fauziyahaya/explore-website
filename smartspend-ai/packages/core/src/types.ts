@@ -163,6 +163,9 @@ export interface ReceiptAttachment {
   uploadedAt: ISOTimestamp;
   /** Pending upload while offline (local file uri). */
   localUri?: string;
+  /** Copy uploaded to the user's Google Drive (drive.file scope) for Sheets links. */
+  driveFileId?: string | null;
+  driveLink?: string | null;
 }
 
 export interface Transaction {

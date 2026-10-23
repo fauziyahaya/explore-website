@@ -1,0 +1,10 @@
+{
+  "indexes": [
+    { "collectionGroup": "transactions", "queryScope": "COLLECTION", "fields": [ { "fieldPath": "createdBy", "order": "ASCENDING" }, { "fieldPath": "date", "order": "DESCENDING" } ] },
+    { "collectionGroup": "transactions", "queryScope": "COLLECTION", "fields": [ { "fieldPath": "status", "order": "ASCENDING" }, { "fieldPath": "date", "order": "DESCENDING" } ] },
+    { "collectionGroup": "invites", "queryScope": "COLLECTION_GROUP", "fields": [ { "fieldPath": "email", "order": "ASCENDING" }, { "fieldPath": "status", "order": "ASCENDING" } ] }
+  ],
+  "fieldOverrides": [
+    { "collectionGroup": "members", "fieldPath": "uid", "indexes": [ { "order": "ASCENDING", "queryScope": "COLLECTION_GROUP" } ] }
+  ]
+}

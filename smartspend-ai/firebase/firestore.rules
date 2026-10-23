@@ -1,0 +1,113 @@
+rules_version = '2';
+
+// SmartSpend AI — Firestore security rules.
+// Multi-tenant isolation: every workspace document is readable only by its
+// active members. Financial records (transactions, audit trail, fingerprints)
+// are written exclusively by Cloud Functions (Admin SDK), which enforce
+// validation, RBAC, duplicate prevention and the hash-chained audit trail.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function memberPath(wid) { return /databases/$(database)/documents/workspaces/$(wid)/members/$(request.auth.uid); }
+    function isMember(wid) {
+      return signedIn() && exists(memberPath(wid)) && get(memberPath(wid)).data.active == true;
+    }
+    function hasRole(wid, roles) { return isMember(wid) && get(memberPath(wid)).data.role in roles; }
+    function changedOnly(keys) {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(keys);
+    }
+    function validName(v) { return v is string && v.size() > 0 && v.size() <= 120; }
+
+    match /users/{uid} {
+      allow read: if signedIn() && request.auth.uid == uid;
+      allow create: if signedIn() && request.auth.uid == uid
+        && !request.resource.data.keys().hasAny(['googleConnection', 'workspaceIds']);
+      allow update: if signedIn() && request.auth.uid == uid
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['googleConnection', 'workspaceIds']);
+      allow delete: if false; // via deleteMyAccount function
+    }
+
+    match /workspaces/{wid} {
+      allow read: if isMember(wid);
+      allow create, delete: if false; // via createWorkspace function
+      allow update: if hasRole(wid, ['owner'])
+        && changedOnly(['name', 'registrationNumber', 'taxIdentificationNumber', 'sstRegistrationNumber', 'address',
+                        'retentionYears', 'reportHeader', 'logoPath', 'approvalRequired'])
+        && validName(request.resource.data.name)
+        && request.resource.data.retentionYears is int
+        && request.resource.data.retentionYears >= 1 && request.resource.data.retentionYears <= 30;
+
+      match /members/{uid} {
+        allow read: if isMember(wid);
+        allow write: if false; // via inviteMember / acceptInvites / setMemberRole
+      }
+
+      match /transactions/{tid} {
+        // Employees see only their own claims; finance roles and auditors see all.
+        allow read: if hasRole(wid, ['owner', 'finance_manager', 'approver', 'auditor'])
+          || (isMember(wid) && resource.data.createdBy == request.auth.uid);
+        allow write: if false; // via saveTransaction / reviewTransaction / amendTransaction
+      }
+
+      match /extractions/{eid} {
+        allow read: if isMember(wid) && resource.data.createdBy == request.auth.uid;
+        allow write: if false;
+      }
+
+      match /audit/{eid} {
+        allow read: if hasRole(wid, ['owner', 'finance_manager', 'auditor']);
+        allow write: if false; // append-only, server-side, hash-chained
+      }
+
+      match /fingerprints/{fp} {
+        allow read, write: if false;
+      }
+
+      match /categories/{cid} {
+        allow read: if isMember(wid);
+        allow create, update: if hasRole(wid, ['owner', 'finance_manager'])
+          && request.resource.data.name.en is string && request.resource.data.name.en.size() <= 60
+          && request.resource.data.kind in ['expense', 'income', 'non_pl']
+          && request.resource.data.accountingClass is string;
+        allow delete: if false; // archive instead, so historical records keep their category
+      }
+
+      match /dimensions/{did} {
+        allow read: if isMember(wid);
+        allow create, update: if hasRole(wid, ['owner', 'finance_manager'])
+          && request.resource.data.type in ['department', 'cost_centre', 'project', 'business_unit']
+          && validName(request.resource.data.name);
+        allow delete: if false;
+      }
+
+      match /budgets/{bid} {
+        allow read: if isMember(wid);
+        allow create, update: if (hasRole(wid, ['owner', 'finance_manager']))
+          && request.resource.data.amount is int && request.resource.data.amount > 0
+          && request.resource.data.period in ['monthly', 'annual']
+          && request.resource.data.workspaceId == wid;
+        allow delete: if hasRole(wid, ['owner', 'finance_manager']);
+      }
+
+      match /reports/{rid} {
+        allow read: if hasRole(wid, ['owner', 'finance_manager', 'approver', 'auditor']);
+        allow write: if false;
+      }
+
+      match /invites/{iid} {
+        allow read: if hasRole(wid, ['owner']);
+        allow write: if false;
+      }
+
+      match /meta/{doc} {
+        allow read: if isMember(wid) && doc in ['categoryMemory', 'sheets'];
+        allow write: if false;
+      }
+    }
+
+    // OAuth refresh tokens and data-request bookkeeping: server only, never readable by any client.
+    match /private_googleTokens/{uid} { allow read, write: if false; }
+    match /private_dataRequests/{uid} { allow read, write: if false; }
+  }
+}

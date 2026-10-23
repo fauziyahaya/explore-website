@@ -12,5 +12,10 @@
     "test": "npm run test -w @smartspend/core && npm run test -w @smartspend/functions",
     "typecheck": "npm run typecheck -w @smartspend/core && npm run typecheck -w @smartspend/functions && npm run typecheck -w @smartspend/mobile",
     "evidence": "npm run evidence -w @smartspend/functions"
+  },
+  "devDependencies": {
+    "@firebase/rules-unit-testing": "^5.0.2",
+    "firebase": "^12.19.0",
+    "firebase-tools": "^15.34.1"
   }
 }
