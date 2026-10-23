@@ -1,0 +1,20 @@
+{
+  "name": "@smartspend/core",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Platform-independent domain logic: financial engine, receipt validation, categorisation, analytics, audit trail, Sheets mapping, reports.",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@noble/hashes": "^2.4.0",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "typescript": "~6.0.3",
+    "vitest": "^5.0.5"
+  }
+}

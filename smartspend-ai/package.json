@@ -1,0 +1,16 @@
+{
+  "name": "smartspend-ai",
+  "private": true,
+  "version": "0.1.0",
+  "description": "SmartSpend AI — intelligent expense & financial management (iOS-first, Expo + Firebase)",
+  "workspaces": [
+    "packages/*",
+    "apps/*",
+    "functions"
+  ],
+  "scripts": {
+    "test": "npm run test -w @smartspend/core && npm run test -w @smartspend/functions",
+    "typecheck": "npm run typecheck -w @smartspend/core && npm run typecheck -w @smartspend/functions && npm run typecheck -w @smartspend/mobile",
+    "evidence": "npm run evidence -w @smartspend/functions"
+  }
+}
