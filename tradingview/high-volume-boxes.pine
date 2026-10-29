@@ -1,0 +1,123 @@
+// This Pine Script® code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+//@version=6
+indicator("High Volume Boxes", "HV Boxes", overlay = true, max_boxes_count = 500)
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Inputs
+// ─────────────────────────────────────────────────────────────────────────────
+grpDet   = "Detection"
+volLen   = input.int(50, "Volume Lookback", minval = 5, group = grpDet, tooltip = "Bars used to compute the average volume and its standard deviation.")
+method   = input.string("Std Dev", "Threshold Method", options = ["Std Dev", "Multiple of Average"], group = grpDet)
+sdMult   = input.float(2.0, "Std Dev Multiplier", minval = 0.1, step = 0.1, group = grpDet, tooltip = "Std Dev method: volume > average + N × stdev.")
+avgMult  = input.float(2.5, "Average Multiplier", minval = 1.0, step = 0.1, group = grpDet, tooltip = "Multiple of Average method: volume > N × average.")
+rangeSrc = input.string("Full Candle", "Box Range", options = ["Full Candle", "Body Only"], group = grpDet)
+
+grpZone    = "Boxes"
+maxZones   = input.int(30, "Max Boxes", minval = 1, maxval = 500, group = grpZone)
+breakSrc   = input.string("Close", "Break Confirmation", options = ["Close", "Wick"], group = grpZone, tooltip = "A bullish box breaks when price goes below its bottom; a bearish box breaks when price goes above its top.")
+keepBroken = input.bool(true, "Keep Broken Boxes (faded)", group = grpZone)
+padding    = input.int(5, "Extend Right (bars)", minval = 0, group = grpZone)
+
+grpStyle  = "Style"
+bullCol   = input.color(#00c896, "Bullish", group = grpStyle)
+bearCol   = input.color(#ff4d6d, "Bearish", group = grpStyle)
+brokenCol = input.color(#787b86, "Broken", group = grpStyle)
+showText  = input.bool(true, "Show Volume Text", group = grpStyle)
+txtSizeIn = input.string("Small", "Text Size", options = ["Tiny", "Small", "Normal"], group = grpStyle)
+colorBars = input.bool(true, "Highlight High-Volume Candles", group = grpStyle)
+
+txtSize = txtSizeIn == "Tiny" ? size.tiny : txtSizeIn == "Small" ? size.small : size.normal
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Types & state
+// ─────────────────────────────────────────────────────────────────────────────
+type Zone
+    box   bx
+    float top
+    float bot
+    bool  bull
+    bool  broken = false
+
+var array<Zone> zones = array.new<Zone>()
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Detection
+// ─────────────────────────────────────────────────────────────────────────────
+if barstate.islast and ta.cum(nz(volume)) == 0
+    runtime.error("This symbol has no volume data.")
+
+// Stats from previous bars so the current bar's volume doesn't skew its own threshold
+float avgVol    = ta.sma(volume, volLen)[1]
+float sdVol     = ta.stdev(volume, volLen)[1]
+float threshold = method == "Std Dev" ? avgVol + sdVol * sdMult : avgVol * avgMult
+float ratio     = avgVol > 0 ? volume / avgVol : na
+bool  isBull    = close >= open
+bool  isHV      = not na(volume) and not na(threshold) and volume > threshold
+
+// Stronger volume spikes get a more opaque fill
+fillTransp(float r) =>
+    math.max(55.0, math.min(85.0, 95.0 - nz(r, 1.0) * 8.0))
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Update existing boxes
+// ─────────────────────────────────────────────────────────────────────────────
+bool brokeBull = false
+bool brokeBear = false
+
+if zones.size() > 0
+    for i = zones.size() - 1 to 0
+        Zone z = zones.get(i)
+        if z.broken
+            continue
+        z.bx.set_right(bar_index + padding)
+        // Only confirm breaks on closed bars so boxes don't flicker in realtime
+        if barstate.isconfirmed
+            float upChk = breakSrc == "Close" ? close : high
+            float dnChk = breakSrc == "Close" ? close : low
+            bool  brk   = z.bull ? dnChk < z.bot : upChk > z.top
+            if brk
+                z.broken := true
+                if z.bull
+                    brokeBull := true
+                else
+                    brokeBear := true
+                if keepBroken
+                    z.bx.set_right(bar_index)
+                    z.bx.set_bgcolor(color.new(brokenCol, 88))
+                    z.bx.set_border_color(color.new(brokenCol, 50))
+                    z.bx.set_border_style(line.style_dashed)
+                    z.bx.set_text_color(color.new(brokenCol, 30))
+                else
+                    z.bx.delete()
+                    zones.remove(i)
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Create new box on a confirmed high-volume bar
+// ─────────────────────────────────────────────────────────────────────────────
+bool newBull = isHV and barstate.isconfirmed and isBull
+bool newBear = isHV and barstate.isconfirmed and not isBull
+
+if newBull or newBear
+    float top  = rangeSrc == "Full Candle" ? high : math.max(open, close)
+    float bot  = rangeSrc == "Full Candle" ? low  : math.min(open, close)
+    color base = isBull ? bullCol : bearCol
+    string txt = showText ? str.tostring(volume, format.volume) + "  ·  " + str.tostring(ratio, "#.#") + "x" : ""
+    box b = box.new(bar_index, top, bar_index + padding, bot,
+         border_color = color.new(base, 20), border_width = 1,
+         bgcolor      = color.new(base, fillTransp(ratio)),
+         text         = txt, text_color = base, text_size = txtSize,
+         text_halign  = text.align_right, text_valign = text.align_center)
+    zones.push(Zone.new(b, top, bot, isBull))
+    if zones.size() > maxZones
+        Zone old = zones.shift()
+        old.bx.delete()
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Visuals & alerts
+// ─────────────────────────────────────────────────────────────────────────────
+barcolor(colorBars and isHV ? (isBull ? bullCol : bearCol) : na)
+
+alertcondition(newBull,   "New Bullish High Volume Box", "High volume bullish box formed on {{ticker}} ({{interval}})")
+alertcondition(newBear,   "New Bearish High Volume Box", "High volume bearish box formed on {{ticker}} ({{interval}})")
+alertcondition(brokeBull, "Bullish Box Broken",          "Price broke below a bullish high volume box on {{ticker}}")
+alertcondition(brokeBear, "Bearish Box Broken",          "Price broke above a bearish high volume box on {{ticker}}")
